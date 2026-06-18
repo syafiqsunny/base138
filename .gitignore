@@ -5,4 +5,5 @@ coverage/
 .env
 .env*.local
 payload-types.ts
+tsconfig.tsbuildinfo
 *.log
