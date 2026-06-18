@@ -1,0 +1,126 @@
+{
+  "name": "PetaKuasa News Harvester - SAMPLE DATA Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "sample-schedule-trigger",
+      "name": "SAMPLE DATA - Hourly Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [280, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.NEXT_PUBLIC_APP_URL}}/api/news-harvester/cron",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-cron-secret",
+              "value": "={{$env.NEWS_HARVESTER_CRON_SECRET}}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000,
+          "retry": {
+            "maxTries": 3,
+            "waitBetweenTries": 60000
+          }
+        }
+      },
+      "id": "sample-call-harvester",
+      "name": "SAMPLE DATA - Run News Harvester",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [540, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "sample-has-errors",
+              "leftValue": "={{$json.result.failed}}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "sample-if-errors",
+      "name": "SAMPLE DATA - Any API Failures?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: { message: 'SAMPLE DATA - Harvester completed with source errors', errors: $json.result.errors } }];"
+      },
+      "id": "sample-format-alert",
+      "name": "SAMPLE DATA - Format Retry Alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1040, 200]
+    }
+  ],
+  "connections": {
+    "SAMPLE DATA - Hourly Schedule": {
+      "main": [
+        [
+          {
+            "node": "SAMPLE DATA - Run News Harvester",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SAMPLE DATA - Run News Harvester": {
+      "main": [
+        [
+          {
+            "node": "SAMPLE DATA - Any API Failures?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SAMPLE DATA - Any API Failures?": {
+      "main": [
+        [
+          {
+            "node": "SAMPLE DATA - Format Retry Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
