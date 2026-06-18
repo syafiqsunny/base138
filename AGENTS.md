@@ -20,3 +20,4 @@ Standard commands live in `package.json` and `README.md` — refer to those. Not
 
 ### Gotchas
 - `npm run lint` is **broken on Next.js 16**: the `next lint` command was removed and now misreads `lint` as a directory arg (`Invalid project directory provided, no such directory: .../lint`). To lint, run ESLint directly, e.g. `npx eslint .` (config: `eslint-config-next`). `typecheck` and `build` are unaffected.
+- **Sample mode only triggers when `NEXT_PUBLIC_SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` are EMPTY.** If `NEXT_PUBLIC_SUPABASE_URL` is set but not a valid `https://` URL (e.g. a placeholder), `getSupabaseAdmin()` (`src/lib/news-harvester/repository.ts`) throws `Invalid supabaseUrl: Must be a valid HTTP or HTTPS URL`, which crashes the `/editorial` dashboard and the `/api/news-harvester/cron` harvest instead of falling back to sample data. If you only want the sample-mode demo, leave those two vars unset (or remove the registered secrets).
