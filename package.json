@@ -1,0 +1,41 @@
+{
+  "name": "petakuasa-news-harvester",
+  "version": "0.1.0",
+  "private": true,
+  "description": "News Harvester module for PetaKuasa political news monitoring.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "payload": "payload",
+    "harvest:once": "tsx scripts/harvest-once.ts"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "^3.85.1",
+    "@payloadcms/richtext-lexical": "^3.85.1",
+    "@supabase/supabase-js": "^2.108.2",
+    "date-fns": "^4.4.0",
+    "next": "^16.2.9",
+    "openai": "^6.44.0",
+    "payload": "^3.85.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "rss-parser": "^3.13.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.9",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "dompurify": "^3.4.9",
+    "postcss": "^8.5.10",
+    "esbuild": "^0.25.12"
+  }
+}
